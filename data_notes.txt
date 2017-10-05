@@ -1,0 +1,16 @@
+# important considerations for data:
+
+## needs
+
+- pictures with names
+- pictures should preferably be standard size / format
+- poisonous/edible categorisation
+
+## sources of data
+
+mushroom database
+- shoorm are sorted by edibility 
+- pictures are in somewhat standard form (maybe?)
+- url: http://www.mushroom.world/mushrooms
+
+

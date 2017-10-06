@@ -11,6 +11,6 @@
 mushroom database
 - shoorm are sorted by edibility 
 - pictures are in somewhat standard form (maybe?)
-- url: http://www.mushroom.world/mushrooms
+- url: http://www.mushroom.world
 
 

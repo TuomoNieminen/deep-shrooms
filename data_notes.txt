@@ -13,4 +13,5 @@ mushroom database
 - pictures are in somewhat standard form (maybe?)
 - url: http://www.mushroom.world
 
-
+Another database of mushrooms in Finland as a csv file.
+http://tun.fi/HBF.25786?locale=fi

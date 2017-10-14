@@ -102,8 +102,9 @@ def scrape_mushroom(url):
 # json.dumps(shrooms)
 #
 def GetShrooms(urls):
-    shrooms = [scrape_mushroom(url) for url in urls]
-    return json.dumps(shrooms)
+    return [scrape_mushroom(url) for url in urls]
+
 
 if __name__ == '__main__':
-    print(GetShrooms(sys.argv[1:]))
+    shrooms = GetShrooms(sys.argv[1:])
+    print(json.dumps(shrooms))

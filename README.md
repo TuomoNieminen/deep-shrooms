@@ -11,4 +11,4 @@ And enter: `scrapy crawl mw_scraper`
 
 ### NOTE:
 
-The images have been already downloaded and can accessed from here: `<link>`
+The images have been already downloaded and are downloaded inside the Jupyter notebook.

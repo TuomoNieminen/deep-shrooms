@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
+import json
 import scrapy
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exceptions import DropItem
@@ -31,17 +32,7 @@ class MWScraperImagePipeline(ImagesPipeline):
         else:
             return item
 
-def get_media_requests(self, item, info):
-    return [scrapy.Request(x, meta={'image_name': item["image_name"]})
-            for x in item.get('image_urls', [])]
-
-def file_path(self, request, response=None, info=None):
-    return '%s.jpg' % request.meta['image_name']
-
-import json
-
 class JsonWriterPipeline(object):
-
     def open_spider(self, spider):
         self.file_classes = open('mushroom_classes.json', 'w')
         self.file_imgs = open('mushroom_imgs.json', 'w')

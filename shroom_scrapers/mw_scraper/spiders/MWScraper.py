@@ -33,7 +33,7 @@ class MWScraper(scrapy.Spider):
             small = div_item.css('small')
             link_url = response.urljoin(link.css('::attr(href)').extract_first().strip())
 
-            name_eng = "{}".format(small.css('::text').extract_first())
+            name_eng = small.css('::text').extract_first()
             # English name might be null
             name_eng_formatted = name_eng.strip()[1:-1] if name_eng is not None else ''
             shroom_dict = {

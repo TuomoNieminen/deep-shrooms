@@ -1,0 +1,50 @@
+---
+title: 'Deep Shrooms: classifying mushroom images'
+author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harju'
+output: html_document
+---
+
+# Introduction
+
+Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harju. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
+
+The project uses tools of data wrangling, machine learning and [TODO: insert smartphone app techonology term]. The project naturally splits into three parts: (1) retrieving and transforming data, (2) training a classifier, (3) building an application.
+
+In this blog post, we'll describe our project and the app building process. We'll showcase our classifiers correctness using summary statistics that communicate the accuracy and predictive power of our model. We'll pay close attention to possible false edibles: we do not wish users of our app to end up eating poisonous mushrooms. We hope that the app would be a fun tool for the curious mind.
+
+## Technical introduction
+
+The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to poisonous/edible class using a machine learning classifier such as a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
+
+To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to at least include a reliable poisonous/edible tag. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
+
+As already mentioned in the introduction, we'll pay close attention to the possibility of false edibles. Instead of simply outputting a binary poisonous or edible status, we'll instead provide the user with the *probability* of having a poisonous mushroom in their hands. Therefore the user can make a choice to only eat mushrooms with very low probability of poison.
+
+## Domain introduction
+
+Humans are very good at categorizing items in images. Based on previous expert knowledge, the following features would be very useful to extract for mushroom classification:
+
+1) Note where the mushroom grows: is it on the ground or on wood.  
+1.1) If it grows on ground it could be a saprotroph of detritus (karikkeen lahottaja), mycorrhiza (juurisieni) which is specific type of mushroom living from the roots of a tree or it could still be a saprotroph of a tree but the wood is on ground level.  
+1.2) If it grows on wood consider if it's conifer (havupuu) or hardwood (lehtipuu). Some species grow on only a very specific wood like oak.  
+2) Do not consider the time of year to be a indicator of any sort. Every year the seasons length differ so one year the mushroom season might start way later than the next year.  
+3) Underneath the mushroom cap can be different types of gills in various combinations.  
+4) Surface of the cap is also a very good classifier of the mushroom. The structure might not be possible to know from a picture though.  
+5) Color of the mushroom varies a lot depending on the humidity and the age of the mushroom. When raining the colors get deeper and more distinctive. Young mushrooms have stronger colors than old ones. Also sunlight might diminish the colors.  
+6) Stipe (*jalka* in Finnish) of a mushroom can also indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
+7) Geographic location of the mushroom could be useful as some species probably don't grow everywhere in Finland.
+
+There is also a lot of data such as smell and touch that could be useful. However, we do not expect to be able to explicitly extract many of these features. However, a CNN can perform feature extraction automatically. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
+
+Sources:
+* http://www.funga.fi/teema-aiheet/sienten-tunnistaminen/
+
+# Retrieving and transforming data
+
+www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images to equal widths of 480 pixels.
+
+# Training and choosing a classifier
+
+
+
+# Building the app

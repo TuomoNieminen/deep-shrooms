@@ -5,6 +5,8 @@ Project for the Helsinki University course Introduction to Data Science
 
 [here](https://tuomonieminen.github.io/deep-shrooms)
 
+To edit the content of the site, edit docs/index.Rmd markdown. Then ping Tuomo or use RStudio/knitr to update the .html.
+
 ## Scraper
 
 To run the scraper to scrape the mushroom details and pictures from MushroomWorld you have to first install scrapy: `pip install scrapy`

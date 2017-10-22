@@ -1,0 +1,12 @@
+model architectures
+
+model 1
+- conv 32 + max pooling 
+- conv 64 + max pooling
+- conv 64 + max pooling
+- dense 64 + dense 1
+
+65-70% training accuracy with 100 epochs and augmented images
+lots of 0 and 1 predictions
+
+

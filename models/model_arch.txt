@@ -10,3 +10,9 @@ model 1
 lots of 0 and 1 predictions
 
 
+model 2 (more data + image padding)
+
+- conv 32 + maxpool
+- conv 64 + maxpool
+- conv 128 + maxpool
+- dense 128 + dense 1

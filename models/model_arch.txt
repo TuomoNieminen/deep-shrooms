@@ -1,18 +1,41 @@
 model architectures
 
-model 1
+# model 1
+
 - conv 32 + max pooling 
 - conv 64 + max pooling
 - conv 64 + max pooling
-- dense 64 + dense 1
+- dense 64 + dropout(0.4) + dense 1
 
 65-70% training accuracy with 100 epochs and augmented images
 lots of 0 and 1 predictions
 
 
-model 2 (more data + image padding)
+# model 2 (more data + image padding)
 
 - conv 32 + maxpool
 - conv 64 + maxpool
 - conv 128 + maxpool
-- dense 128 + dense 1
+- dense 128 + dropout(0.33) + dense 1
+
+Epoch 89/100: 256s - loss: 6.7670 - acc: 0.5802
+
+# model 3 (same as 1 with more data and padding)
+
+- conv 32 + max pooling 
+- conv 64 + max pooling
+- conv 64 + max pooling
+- dense 64 + dropout(0.33) + dense 1
+
+Epoch 52/100: acc: 0.5686
+
+# model 4 (same as above but with 0.4 dropout)
+
+Epoch 41/50: acc: 0.6324
+
+# model 5
+
+changes: 
+- dropout 0.45
+- data augmentation as in tutorial
+- Use train and test data

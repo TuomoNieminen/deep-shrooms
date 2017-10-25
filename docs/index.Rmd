@@ -117,11 +117,20 @@ The image data was splitted to training and testing sets with a split of 80% to 
 
 The picture below shows both the training and testing accuracy for each of the epochs. It can be seen that while the training accuracy has an increasing trend, the testing accuracy averages a steady 55% accuracy, which is remarkably poor. 
 
-```{r, out.width = "600px", out.height = "600px", fig.cap = "Training and testing accuracy of our CNN by epoch"}
+```{r, out.width = "800px", fig.cap = "Training and testing accuracy of our CNN by epoch"}
 knitr::include_graphics("training_history.png")
 ```
 
 It should be noted that an identical network was trained with the same strategy but possibly different training and testing data, and that network achieved higher testing accuracy (the network was trained again to save and display the training history). It is quite possible that due to the small amount of data, the training set might not include suitable examples of all eatable and non-eatable mushrooms available in dataset, which would naturally affect performance.
+
+# Model predictions
+
+Once the network has been trained, it can be used to make predictions. Our model outputs a single value describing the probability that a mushroom is eatable.
+
+```{r, out.width = "600px", out.height = "400px", fig.cap = "An example of a prediction of the CNN"}
+knitr::include_graphics("prediction_example.png")
+```
+
 
 # Building the app
 

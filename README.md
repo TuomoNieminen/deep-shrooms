@@ -40,10 +40,10 @@ Note that the model expects inputs as 4d arrays: (None, 480, 480, 3). If you wan
 the image to the model as a (1, 480, 480, 3) array. Also note that **the model has been trained using images where the pixes values have been rescaled to value between 0 and 1**. The model expects that all inputs are rescaled by a division by 255.
 
 ```
-x = X[0] # X contains images as (N, 480, 480, 3) array
-x.shape = (1, ) + x.shape
-x = x/255.0
-loaded_model.predict(x).round(3)
+x = X_imgs[0]               # X_imgs contains images as (N, 480, 480, 3) array
+x.shape = (1, ) + x.shape   # reshape x to (1, 480, 480, 3)
+x = x / 255.0               # rescale
 
-# array([[ 0.063]], dtype=float32)
+loaded_model.predict(x).round(3)
+# array([[ 0.32712618]], dtype=float32)
 ```

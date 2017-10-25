@@ -34,3 +34,16 @@ loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights("models/weights.h5")
 ```
 
+### Predicting
+
+Note that the model expects inputs as 4d arrays: (None, 480, 480, 3). If you want to predict the probability of edibility of a single mushroom, pass 
+the image to the model as a (1, 480, 480, 3) array. Also note that **the model has been trained using images where the pixes values have been rescaled to value between 0 and 1**. The model expects that all inputs are rescaled by a division by 255.
+
+```
+x = X[0] # X contains images as (N, 480, 480, 3) array
+x.shape = (1, ) + x.shape
+x = x/255.0
+loaded_model.predict(x).round(3)
+
+# array([[ 0.063]], dtype=float32)
+```

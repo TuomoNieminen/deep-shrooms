@@ -4,6 +4,10 @@ author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harju'
 output: html_document
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
 # Introduction
 
 Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harju. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
@@ -43,8 +47,76 @@ Sources:
 
 www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images to equal widths of 480 pixels.
 
-# Training and choosing a classifier
+Our images are represented as tuples of size 
+(480, 480, 3) where the dimension correspond to "width", "height" and "channel". The last 
+dimension is the rgb channel, meaning that the image can be thought of as three matrices stacked over each other, 
+where each matrix represents the amount of red green or blue in the picture. 
 
+
+# Using augmentation to artificially increase the amount of data
+
+Our mushroom dataset contains some hunderds of pictures. It is however well known that  deep learning methods start to work well when them amount of data quite a lot more, preferably in the tens of thousands if not millions of examples. We were well off the mark.
+
+We decided to "cheat" by artificially increasing the number of unique training examples by introducing small distortions to the images. We used the **keras** deep learning library to build an image generator which, instead of the original images, produces an infinite stream of randomly altered images.
+
+```{r, out.width = "600px", out.height = "600px"}
+knitr::include_graphics("augmented_shrooms.png")
+```
+
+# Our CNN model architecture
+
+Our classifier is a convolutional neural network (CNN) consising of 
+
+- 3 convolutional layers, each followed by a pooling layer  
+- A fully connected layer  
+- An output layer with a single node, outputting a probability value  
+
+The architecture of our model is visualized in the picture below.  
+
+<br>
+
+```{r, out.width = "350px"}
+knitr::include_graphics("model.png")
+```
+
+## Convolutional layers
+
+A matrix convolution is a linear operation which transforms the input by 
+"sliding" a 3 x 3 convolution matrix (in our case) over the input tuple and produces a new feature map. 
+The convolution matrix first looks at the area in the upper left corner of size (3,3,3) and produces a single output 
+by performing a matrix multiplication. 
+It then moves one pixel to the right and does the same. It continues over the whole image.
+This results in a (478, 478, 1) feature map. 
+
+The depths of our three convolutional layers are 32, 64 and 64. 
+This means that in the first layer, the convolution operation is performed separately 32 times by 32 different convolution 
+matrices and 64 in the second and third. The first convolutional layer 
+therefore procudes an output of (478, 478, 32) and so on.
+
+## ReLU activation
+
+Each convolutional layer is followed by a rectified linear unit (ReLU). ReLU is simple nonlinear function wich outputs:  
+
+`max(0, input)`  
+
+The purpose of the relu activation is to introduce nonlinearity to the feature maps. 
+The matrix convolution is a linear operation and most interesting aspects of images are usually nonlinear. 
+
+## Pooling layer
+
+Pooling is a simple way to reduce the dimensionaly of the problem. 
+We used max pooling with pool size (2,2), which looks at disjoint areas of size (2,2), i.e. four values of a single feature map, and 
+outputs the maximum value.
+
+# Training a classifier
+
+
+# Performance
 
 
 # Building the app
+
+
+# Sources
+
+- [Intuitive explanation of CNNs](https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/)  

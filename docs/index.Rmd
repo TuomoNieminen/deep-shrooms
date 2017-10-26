@@ -1,6 +1,6 @@
 ---
 title: 'Deep Shrooms: classifying mushroom images'
-author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harju'
+author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää'
 output: html_document
 ---
 
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction
 
-Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harju. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
+Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
 
 The project uses tools of data wrangling, machine learning and [TODO: insert smartphone app techonology term]. The project naturally splits into three parts: (1) retrieving and transforming data, (2) training a classifier, (3) building an application.
 
@@ -42,7 +42,9 @@ There is also a lot of data such as smell and touch that could be useful. Howeve
 
 # Retrieving and transforming data
 
-www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images to equal widths of 480 pixels.
+www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. From these mushrooms we have collected besides the edibility their names in Finnish, English and Latin. We also collected the URL:s for the shroom and the pictures available on the site for each mushroom, from which we then downloaded the images. Since the edibility was originally classified into 7 different classes, like "edible and good", "leathally poisonous" and "edible and excellent", we decided to narrow the edibility down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that all edible mushrooms require no preprocessing and should be safe to eat. 
+
+The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. In order for the model to work, we needed to scale the channel from the original scale of 0-255 to a scale between 0-1.
 
 Our images are represented as tuples of size 
 (480, 480, 3) where the dimension correspond to "width", "height" and "channel". The last 

@@ -20,22 +20,18 @@ The [code](https://github.com/TuomoNieminen/deep-shrooms) for the project lives 
 
 ## Domain introduction
 
-Muhsrooms can be classified into several categories based on edibility. Reasons for not wanting to eat a mushroom include poor taste and poison. Correct classification of a found mushroom is a basic problem that a mushroom hunter faces.
-
-- The hunter wishes to avoid inedible and poisonous mushrooms
-- The hunter wishes to collect edible mushrooms
-
-Further classification according to taste is also possible and in some cases poison can be removed by cooking.  
+Muhsrooms can be classified into several categories based on edibility. Reasons for not wanting to eat a mushroom include poor taste and poison. Further classification according to taste is also possible and in some cases poison can be removed by cooking.  
+Correct classification of a found mushroom is a basic problem that a mushroom hunter faces: the hunter wishes to avoid inedible and poisonous mushrooms and to collect edible mushrooms.
 
 Humans are generally very good at categorizing items based on appearance and other available information. Based on expert knowledge, the following information is useful for mushroom classification:
 
-1) Where the mushroom grows: is it on the ground or on wood.  
-1.1) If it grows on ground it could be a saprotroph of detritus (karikkeen lahottaja), mycorrhiza (juurisieni) which is specific type of mushroom living from the roots of a tree or it could still be a saprotroph of a tree but the wood is on ground level.  
-1.2) If it grows on wood consider if it's conifer (havupuu) or hardwood (lehtipuu). Some species grow on only a very specific wood like oak.  
+1) The site where the mushroom grows: is it on the ground or on wood.  
+  - If it grows on ground it could be a saprotroph of detritus (karikkeen lahottaja), mycorrhiza (juurisieni) which is specific type of mushroom living from the roots of a tree or it could still be a saprotroph of a tree but the wood is on ground level.  
+  - If it grows on wood consider if it's conifer (havupuu) or hardwood (lehtipuu). Some species grow on only a very specific wood like oak.  
 2) Underneath the mushroom cap there can be different types of gills in various combinations.  
 3) Surface of the cap is a very good classifier of the mushroom. The structure might not be possible to know from a picture.  
 4) Color of the mushroom varies a lot depending on the humidity and the age of the mushroom. When raining the colors get deeper and more distinctive. Young mushrooms have stronger colors than old ones. Sunlight might diminish the colors.  
-5) Stipe (*jalka* in Finnish) of a mushroom can also indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
+5) Stipe (*jalka* in Finnish) of a mushroom can indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
 6) Geographic location of the mushroom could be useful as some species probably don't grow everywhere in Finland.
 7) Smell and touch could also help in classification.  
 

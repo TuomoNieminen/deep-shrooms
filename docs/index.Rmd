@@ -4,7 +4,7 @@ author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää'
 output: 
   html_document:
   theme: sandstone
-  in_header: "<style>.main-container{max-width:900px;}body{background-color:#FCFEFB;}</style>"
+  before_body: "<style>.main-container{max-width:900px;}body{background-color:#FCFEFB;}</style>"
 ---
 
 ```{r setup, include = FALSE}

@@ -248,9 +248,10 @@ Precision and recall of our mushroom classifier by the probability treshold. The
 </div>
 </div>
 </div>
-<div id="the-app" class="section level1">
-<h1>The app</h1>
-<p>We used our classifier to build an interactive application which outputs the probability for edibility of inputted 480x480x3 images.</p>
+<div id="building-the-app" class="section level1">
+<h1>Building the app</h1>
+<p>We created a demo-app using React as frontend and Flask as a backend that loads the imported model and classifies the pictures as they come. The app can be found <a href="https://teekoivi.users.cs.helsinki.fi/">here</a>. The user can select a file to give to the app and the app predicts a propability of the mushrooms edibility. The page also contains some example images with links. By clicking on a example image the app calculates the propability for them.</p>
+<p>Building the app was quite time consuming. React-Native wasn’t as straight-forward as we thought it would have been.Serving the model was also complicated. Tensorflow-serving was probably the “best” way of doing it but super-difficult to use.</p>
 <p><a href="https://teekoivi.users.cs.helsinki.fi/">The app</a></p>
 </div>
 <div id="sources" class="section level1">

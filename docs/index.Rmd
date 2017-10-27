@@ -148,9 +148,12 @@ The picture below shows the precision and recall of our classifier, by the proba
 knitr::include_graphics("precision_recall.png")
 ```
 
-# The app
 
-We used our classifier to build an interactive application which outputs the probability for edibility of inputted 480x480x3 images.
+# Building the app
+
+We created a demo-app using React as frontend and Flask as a backend that loads the imported model and classifies the pictures as they come. The app can be found [here](https://teekoivi.users.cs.helsinki.fi/). The user can select a file to give to the app and the app predicts a propability of the mushrooms edibility. The page also contains some example images with links. By clicking on a example image the app calculates the propability for them.
+
+Building the app was quite time consuming. React-Native wasn’t as straight-forward as we thought it would have been.Serving the model was also complicated. Tensorflow-serving was probably the “best” way of doing it but super-difficult to use.
 
 [The app](https://teekoivi.users.cs.helsinki.fi/)
 

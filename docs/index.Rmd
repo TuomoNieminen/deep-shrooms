@@ -132,7 +132,7 @@ The image data was splitted to training and testing sets with a split of 80% to 
 
 The picture below shows both the training and testing accuracy for each of the epochs. It can be seen that while the training accuracy has an increasing trend, the testing accuracy averages a steady 55% accuracy, which is remarkably poor. 
 
-```{r, out.width = "600px", fig.cap = "Training and testing accuracy of our CNN by epoch"}
+```{r, out.width = "500px", fig.cap = "Training and testing accuracy of our CNN by epoch"}
 knitr::include_graphics("training_history.png")
 ```
 
@@ -153,7 +153,7 @@ Since our model outputs a probability for edibility, the user can make a choice 
 
 The picture below shows the precision and recall of our classifier, by the probability treshold chosen. 
 
-```{r, out.width = "600px", fig.cap = "Precision and recall of our mushroom classifier by the probability treshold. The probabilities are given in percentages in the x axis."}
+```{r, out.width = "500px", fig.cap = "Precision and recall of our mushroom classifier by the probability treshold. The probabilities are given in percentages in the x axis."}
 knitr::include_graphics("precision_recall.png")
 ```
 

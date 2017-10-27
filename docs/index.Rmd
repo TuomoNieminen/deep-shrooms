@@ -18,11 +18,11 @@ In this blog post, we'll describe our project and the app building process. We'l
 
 ## Technical introduction
 
-The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to poisonous/edible class using a machine learning classifier such as a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
+The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to edible or not edible, using a machine learning classifier such as a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
 
-To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to at least include a reliable poisonous/edible tag. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
+To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to include a reliable edibility tag. The name of mushroom would be enough though, since the edibility status can be retrived based on the name. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
 
-As already mentioned in the introduction, we'll pay close attention to the possibility of false edibles. Instead of simply outputting a binary poisonous or edible status, we'll instead provide the user with the *probability* of having a poisonous mushroom in their hands. Therefore the user can make a choice to only eat mushrooms with very low probability of poison.
+As already mentioned, we'll have to pay close attention to the possibility of false edibles. Instead of simply outputting a binary edible or not edible status, we'll instead provide the user with the *probability* of having an edible mushroom in their hands. If the user finds that the probability of edibility is high, the user can decide to collect the mushroom and do further reseach at home. Our app is therefore a tool for deciding whether to collect a mushroom or not, not a tool for decising whether to eat the mushroom or not.
 
 ## Domain introduction
 
@@ -38,19 +38,15 @@ Humans are very good at categorizing items in images. Based on previous expert k
 6) Stipe (*jalka* in Finnish) of a mushroom can also indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
 7) Geographic location of the mushroom could be useful as some species probably don't grow everywhere in Finland.
 
-There is also a lot of data such as smell and touch that could be useful. However, we do not expect to be able to explicitly extract many of these features. However, a CNN can perform feature extraction automatically. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
+In addition to the possibilities listed above, there are also features such as smell and touch that could be useful. However, we do not expect to be able to explicitly extract these features. However, a CNN performs feature extraction implicitly based on an input image. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
 
 # Retrieving and transforming data
 
-www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. From these mushrooms we have collected besides the edibility their names in Finnish, English and Latin. We also collected the URL:s for the shroom and the pictures available on the site for each mushroom, from which we then downloaded the images. Since the edibility was originally classified into 7 different classes, like "edible and good", "leathally poisonous" and "edible and excellent", we decided to narrow the edibility down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that all edible mushrooms require no preprocessing and should be safe to eat. 
+www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. From these mushrooms we have collected, besides the edibility, their names in Finnish, English and Latin. We also collected the URL:s for the available images of the mushshroom and then downloaded the images.  
 
-The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. In order for the model to work, we needed to scale the channel from the original scale of 0-255 to a scale between 0-1.
+In mushroom.world, the edibility was originally classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "leathally poisonous". We decided to treat the problem as a binary classification task and narrowed the edibility status down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that all edible mushrooms require no preprocessing and should be safe to eat. 
 
-Our images are represented as tuples of size 
-(480, 480, 3) where the dimension correspond to "width", "height" and "channel". The last 
-dimension is the rgb channel, meaning that the image can be thought of as three matrices stacked over each other, 
-where each matrix represents the amount of red green or blue in the picture. 
-
+The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this, we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. The data was then represented as three stacked 480x480 matrices (one for each presentation of red, green and blue values in the picture, called *channels*) where each matrix contains values between 0 and 255. To avoid numerical problems in training our model, we also scaled the channels from the original scale of 0-255 to a scale between 0-1.
 
 # Using augmentation to artificially increase the amount of data
 
@@ -80,38 +76,37 @@ knitr::include_graphics("model.png")
 
 ## Convolutional layers
 
-A matrix convolution is a linear operation which transforms the input by 
-"sliding" a 3 x 3 convolution matrix (in our case) over the input array and produces a new feature map. 
-The convolution matrix first looks at the area in the upper left corner of size (3,3,3) and produces a single output 
+The convolutional layers of the network are essential, as their goal is to learn to recognize and extract the important features in the input images. techically, the convolutional layers use matrix convolution for this task. A matrix convolution is a linear operation which transforms the input by 
+"sliding" a 3 x 3 convolution matrix (in our case) over the input array and produces a new *feature map*m i.e. a new representation of the input. 
+For colored images, the convolution matrix first looks at the area in the upper left corner of size (3,3,3) and produces a single output 
 by performing a matrix multiplication over that area.
 It then moves one pixel to the right and does the same. It continues over the whole image.
 
 The above operation results in a (478, 478, 1) feature map; a new representation of the input images. 
-The representation depends on the values in the convolution matrix. 
+The representation depends on both the inputted images and the values in the convolution matrix. 
 These values are treated as parameters in the network and are estimated during training to produce the optimal feature map.
 
 The depths of our three convolutional layers are 32, 64 and 64. 
 This means that in the first layer, the convolution operation is performed separately 32 times by 32 different convolution 
-matrices. In the second and third convolutional layers, the operation is performed 64 times. The first convolutional layer 
-therefore procudes an output of (478, 478, 32) and so on.
+matrices, producing a feature map of size (478, 478, 32). In the second and third convolutional layers, the operation is performed 64 times. 
 
 ## ReLU activation and max pooling
 
-Each convolutional layer is followed by a rectified linear unit (ReLU). ReLU is simple nonlinear function wich outputs:  
+Each convolutional layer is followed by a *rectified linear unit* (ReLU). ReLU is simple nonlinear function wich outputs:  
 
 `max(0, input)`  
 
 The purpose of the relu activation is to introduce nonlinearity to the feature maps. 
 The matrix convolution is a linear operation and most interesting aspects of images are usually nonlinear. 
 
-Pooling is a simple way to reduce the dimensionality of the problem and help in generalisation.
+Each convolution is also followed by *pooling*, which is a simple way to reduce the dimensionality of the problem and threfore help in generalisation.
 We used max pooling with pool size (2,2), which halves the input in both vertical and horizontal dimensions by outputting the maximum value of two disjoint consequent values in the feature map.
 
 ## Dense layers and output
 
-After the convolutional layer, there is a fully connected layer with 64 nodes. This means that each node uses the output of each previous node in a linear equation. Each node then uses a ReLU activation to introduce nonlinearity. 
+After the three convolutional layers, our model has a fully connected layer with 64 nodes. This means that each node uses the output of each previous node in a linear equation. Each node then uses a ReLU activation to introduce nonlinearity. 
 
-Finally, a single output node connects to each of the previous 64 nodes. A linear equation is again followed by a nonlinear one, this time the sigmoid function, which outputs values between 0 and 1. These values can be interpret as probabilities, and they can be used for predicting the class of the image. A natural choice is to predict a mushroom as eatable, if the probability of it being eatable is at least 0.5. Tis is not the only possible choice, however, as one might wish to be more conservative to avoid eating poisonous mushrooms.
+Finally, a single output node connects to each of the previous fully connected 64 nodes. Linear equations are again followed by a nonlinear one, this time the sigmoid function, which outputs values between 0 and 1. Since the target is binary (edible or note), these values can be interpret as probabilities, and they can be used for predicting the class of the image. A natural choice is to predict a mushroom as eatable, if the probability of it being eatable is at least 0.5. This is not the only possible choice, however, as one might wish to be more conservative to avoid collecting poisonous mushrooms.
 
 # Training the network
 
@@ -123,7 +118,7 @@ The picture below shows both the training and testing accuracy for each of the e
 knitr::include_graphics("training_history.png")
 ```
 
-It should be noted that an identical network was trained with the same strategy but possibly different training and testing data, and that network achieved higher testing accuracy (the network was trained again to save and display the training history). It is quite possible that due to the small amount of data, the training set might not include suitable examples of all eatable and non-eatable mushrooms available in dataset, which would naturally affect performance.
+It should be noted that an identical network was trained with the same strategy but possibly different training and testing data, and that network achieved higher testing accuracy (the same network was trained again to display the training history above). It is quite possible that due to the small amount of data, the training set might not include suitable examples of all eatable and non-eatable mushrooms available in dataset, which would naturally affect performance.
 
 
 # Model predictions
@@ -136,7 +131,7 @@ knitr::include_graphics("prediction_example.png")
 
 ## Precision and recall
 
-Since our model outputs a probability for edibility, the user can make a choice to only pick mushrooms that have a very high probability of edibility. The higher that treshold is, the less likely it is that the hunter will collect poisonous or inedible mushroom (high precision). However, the tradeoff is that the hunter is also more likely to leave some edible mushrooms in the forest (low recall).
+Since our model outputs a probability for edibility, the user can make a choice to only pick mushrooms that have a very high probability of edibility. The higher that treshold is, the less likely it is that the hunter will collect a poisonous or an inedible mushroom (high precision). However, the tradeoff is that the hunter is also more likely to leave some edible mushrooms in the forest (low recall).
 
 The picture below shows the precision and recall of our classifier, by the probability treshold chosen. 
 

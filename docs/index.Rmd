@@ -4,16 +4,8 @@ author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää'
 output: 
   html_document:
   theme: sandstone
+  in_header: "<style>.main-container{max-width:900px;}body{background-color:#FCFEFB;}</style>"
 ---
-
-<style>
-.main-container {
-max-width: 900px;
-}
-body {
-background-color: #FCFEFB;
-}
-</style>
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)

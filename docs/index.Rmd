@@ -12,45 +12,54 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
 
-The project uses tools of data wrangling, machine learning and [TODO: insert smartphone app techonology term]. The project naturally splits into three parts: (1) retrieving and transforming data, (2) training a classifier, (3) building an application.
+The project uses tools of data wrangling, machine learning and interactive application design. The project naturally splits into three parts: (1) retrieving and transforming data, (2) training a classifier, (3) building an interactive application.
 
-In this blog post, we'll describe our project and the app building process. We'll showcase our classifiers correctness using summary statistics that communicate the accuracy and predictive power of our model. We'll pay close attention to possible false edibles: we do not wish users of our app to end up eating poisonous mushrooms. We hope that the app would be a fun tool for the curious mind.
+In this blog post, we'll describe our project. We'll showcase our classifiers correctness using summary statistics that communicate the accuracy and predictive power of our model. We'll pay close attention to possible false edibles: we do not wish users of our app to end up eating poisonous mushrooms. We hope that the app would be a fun tool for the curious mushroom hunter. 
 
-## Technical introduction
-
-The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to edible or not edible, using a machine learning classifier such as a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
-
-To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to include a reliable edibility tag. The name of mushroom would be enough though, since the edibility status can be retrived based on the name. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
-
-As already mentioned, we'll have to pay close attention to the possibility of false edibles. Instead of simply outputting a binary edible or not edible status, we'll instead provide the user with the *probability* of having an edible mushroom in their hands. If the user finds that the probability of edibility is high, the user can decide to collect the mushroom and do further reseach at home. Our app is therefore a tool for deciding whether to collect a mushroom or not, not a tool for decising whether to eat the mushroom or not.
+The [code](https://github.com/TuomoNieminen/deep-shrooms) for the project lives in GitHub. 
 
 ## Domain introduction
 
-Humans are very good at categorizing items in images. Based on previous expert knowledge, the following features would be very useful to extract for mushroom classification:
+Muhsrooms can be classified into several categories based on eatability. Reasons for not wanting to eat a mushroom include poor taste and poison. Correct classification of a found mushroom is a basic problem that a mushroom hunter faces.
 
-1) Note where the mushroom grows: is it on the ground or on wood.  
+- The hunter wishes to avoid inedible and poisonous mushrooms
+- The hunter wishes to collect edible mushrooms
+
+Further classification according to taste is also possible and in some cases poison can be removed by cooking. Humans are very good at categorizing items by appearance and other available information. Based on previous expert knowledge, the following information is useful for mushroom classification:
+
+1) Where the mushroom grows: is it on the ground or on wood.  
 1.1) If it grows on ground it could be a saprotroph of detritus (karikkeen lahottaja), mycorrhiza (juurisieni) which is specific type of mushroom living from the roots of a tree or it could still be a saprotroph of a tree but the wood is on ground level.  
 1.2) If it grows on wood consider if it's conifer (havupuu) or hardwood (lehtipuu). Some species grow on only a very specific wood like oak.  
-2) Do not consider the time of year to be a indicator of any sort. Every year the seasons length differ so one year the mushroom season might start way later than the next year.  
-3) Underneath the mushroom cap can be different types of gills in various combinations.  
-4) Surface of the cap is also a very good classifier of the mushroom. The structure might not be possible to know from a picture though.  
-5) Color of the mushroom varies a lot depending on the humidity and the age of the mushroom. When raining the colors get deeper and more distinctive. Young mushrooms have stronger colors than old ones. Also sunlight might diminish the colors.  
-6) Stipe (*jalka* in Finnish) of a mushroom can also indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
-7) Geographic location of the mushroom could be useful as some species probably don't grow everywhere in Finland.
+2) Underneath the mushroom cap there can be different types of gills in various combinations.  
+3) Surface of the cap is a very good classifier of the mushroom. The structure might not be possible to know from a picture.  
+4) Color of the mushroom varies a lot depending on the humidity and the age of the mushroom. When raining the colors get deeper and more distinctive. Young mushrooms have stronger colors than old ones. Sunlight might diminish the colors.  
+5) Stipe (*jalka* in Finnish) of a mushroom can also indicate a lot of information from the mushroom. Thin and thick shapes are more distinctive than average size.  
+6) Geographic location of the mushroom could be useful as some species probably don't grow everywhere in Finland.
+7) Smell and touch could also help in classification.  
 
-In addition to the possibilities listed above, there are also features such as smell and touch that could be useful. However, we do not expect to be able to explicitly extract these features. However, a CNN performs feature extraction implicitly based on an input image. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
+
+## Technical introduction
+
+The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to edible or not edible, using a machine learning classifier based on a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
+
+To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to include a reliable edibility tag. A name tag could be enough, since edibility could be separately retrived based on the name. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
+
+We do not expect to be able to explicitly extract the influential features introduced in the previous section. We will only use images as input information for our classifier, so features such as smell and location will not be used. However, we do expect our model to be able to impicitly extract some of the influential features related to appearance. This is because a CNN performs feature extraction implicitly based on an input image, using it's convolutional layers. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
+
+As already mentioned, we'll have to pay close attention to the possibility of false edibles. Instead of simply outputting a binary class, we'll instead provide the user with the *probability* of having an edible mushroom in their hands. If the user finds that the probability of edibility is high, the user can decide to collect the mushroom and do further reseach at home. Our app is therefore a tool for deciding whether to collect a mushroom, not a tool for deciding whether to eat the mushroom.
+
 
 # Retrieving and transforming data
 
-www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. We build a web scraped which retrieves images and their information from the website. From these mushrooms we have collected, besides the edibility, their names in Finnish, English and Latin. We also collected the URL:s for the available images of the mushshroom and then downloaded the images.  
+www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. The database is not directly accessible, so we build a web scraped which retrieves muhsroom information from the website. For each mushroom, we also collected the URL:s for the available images of the mushroom and then downloaded the images. We also collected the mushroom names in English and Latin and used another data source to retrieve the names in Finnish. We were able to retrieve 536 pictures of 166 different mushrooms as a base data-set.
 
-In mushroom.world, the edibility was originally classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "leathally poisonous". We decided to treat the problem as a binary classification task and narrowed the edibility status down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that all edible mushrooms require no preprocessing and should be safe to eat. 
+In mushroom.world, the edibility of mushrooms was classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "lethally poisonous". Due to the small amount of available data, we decided to treat the problem as a binary classification task and narrowed the edibility status down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that in our definition, an "edible" mushroom requires no preprocessing and is always safe to eat. 
 
-The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this, we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. The data was then represented as three stacked 480x480 matrices (one for each presentation of red, green and blue values in the picture, called *channels*) where each matrix contains values between 0 and 255. To avoid numerical problems in training our model, we also scaled the channels from the original scale of 0-255 to a scale between 0-1.
+The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this, we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. The images were colored, so more specifically a single image is represented by three stacked 480x480 matrices (one for each of red, green and blue values in the picture) with values between 0 and 255. To avoid numerical problems in training our model, we changed the representation from the original scale of 0-255 to a scale between 0-1.
 
 # Using augmentation to artificially increase the amount of data
 
-Our mushroom dataset contains some hunderds of pictures. It is however well known that  deep learning methods start to work well when them amount of data quite a lot more, preferably in the tens of thousands if not millions of examples. We were well off the mark.
+Our mushroom dataset contains some hunderds of pictures. It is however well known that deep learning methods start to work well when them amount of data is quite a lot more, preferably in the tens of thousands if not millions of examples. We were well off the mark.
 
 We decided to "cheat" by artificially increasing the number of unique training examples by introducing small distortions to the images. We used the **keras** deep learning library to build an image generator which, instead of the original images, produces an infinite stream of randomly altered images.
 
@@ -76,15 +85,15 @@ knitr::include_graphics("model.png")
 
 ## Convolutional layers
 
-The convolutional layers of the network are essential, as their goal is to learn to recognize and extract the important features in the input images. techically, the convolutional layers use matrix convolution for this task. A matrix convolution is a linear operation which transforms the input by 
-"sliding" a 3 x 3 convolution matrix (in our case) over the input array and produces a new *feature map*m i.e. a new representation of the input. 
+The convolutional layers of the network are essential, as their goal is to learn to recognize and extract the important features in the input images. Techically, the convolutional layers use matrix convolution for this task. A matrix convolution is a linear operation which transforms the input by 
+"sliding" a 3 x 3 convolution matrix (in our case) over the input array and produces a new *feature map*, i.e. a new representation of the input. 
 For colored images, the convolution matrix first looks at the area in the upper left corner of size (3,3,3) and produces a single output 
 by performing a matrix multiplication over that area.
-It then moves one pixel to the right and does the same. It continues over the whole image.
+It then moves one pixel to the right and does the same, and continues over the whole image.
 
 The above operation results in a (478, 478, 1) feature map; a new representation of the input images. 
-The representation depends on both the inputted images and the values in the convolution matrix. 
-These values are treated as parameters in the network and are estimated during training to produce the optimal feature map.
+The representation depends on both the inputted images and the values in the convolution matrix, treated as parameters in the network. 
+The parameters are estimated during training to produce the optimal feature maps.
 
 The depths of our three convolutional layers are 32, 64 and 64. 
 This means that in the first layer, the convolution operation is performed separately 32 times by 32 different convolution 
@@ -106,7 +115,7 @@ We used max pooling with pool size (2,2), which halves the input in both vertica
 
 After the three convolutional layers, our model has a fully connected layer with 64 nodes. This means that each node uses the output of each previous node in a linear equation. Each node then uses a ReLU activation to introduce nonlinearity. 
 
-Finally, a single output node connects to each of the previous fully connected 64 nodes. Linear equations are again followed by a nonlinear one, this time the sigmoid function, which outputs values between 0 and 1. Since the target is binary (edible or note), these values can be interpret as probabilities, and they can be used for predicting the class of the image. A natural choice is to predict a mushroom as eatable, if the probability of it being eatable is at least 0.5. This is not the only possible choice, however, as one might wish to be more conservative to avoid collecting poisonous mushrooms.
+Finally, a single output node connects to each of the previous fully connected 64 nodes. Linear equations are again followed by a nonlinear one, this time the sigmoid function, which outputs values between 0 and 1. Since our target is binary (edible or not), these values can be interpret as probabilities, and they can be used for predicting the class of the image. A natural choice is to predict a mushroom as eatable, if the probability of it being eatable is at least 0.5. This is not the only possible choice, however, as one might wish to be more conservative to avoid collecting poisonous mushrooms.
 
 # Training the network
 
@@ -131,7 +140,7 @@ knitr::include_graphics("prediction_example.png")
 
 ## Precision and recall
 
-Since our model outputs a probability for edibility, the user can make a choice to only pick mushrooms that have a very high probability of edibility. The higher that treshold is, the less likely it is that the hunter will collect a poisonous or an inedible mushroom (high precision). However, the tradeoff is that the hunter is also more likely to leave some edible mushrooms in the forest (low recall).
+Since our model outputs a probability for edibility, the user can make a choice to only pick mushrooms that have a very high probability of edibility. The higher the probability treshold the mushroom hunter chooses, the less likely it is that the hunter will collect a poisonous or an inedible mushroom (high precision). However, the tradeoff is that with a high probability treshold, the hunter is also more likely to leave some edible mushrooms in the forest (low recall).
 
 The picture below shows the precision and recall of our classifier, by the probability treshold chosen. 
 
@@ -139,8 +148,11 @@ The picture below shows the precision and recall of our classifier, by the proba
 knitr::include_graphics("precision_recall.png")
 ```
 
-# Building the app
+# The app
 
+We used our classifier to build an interactive application which outputs the probability for edibility of inputted 480x480x3 images.
+
+[The app](https://teekoivi.users.cs.helsinki.fi/)
 
 # Sources
 

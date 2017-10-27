@@ -20,12 +20,14 @@ The [code](https://github.com/TuomoNieminen/deep-shrooms) for the project lives 
 
 ## Domain introduction
 
-Muhsrooms can be classified into several categories based on eatability. Reasons for not wanting to eat a mushroom include poor taste and poison. Correct classification of a found mushroom is a basic problem that a mushroom hunter faces.
+Muhsrooms can be classified into several categories based on edibility. Reasons for not wanting to eat a mushroom include poor taste and poison. Correct classification of a found mushroom is a basic problem that a mushroom hunter faces.
 
 - The hunter wishes to avoid inedible and poisonous mushrooms
 - The hunter wishes to collect edible mushrooms
 
-Further classification according to taste is also possible and in some cases poison can be removed by cooking. Humans are very good at categorizing items by appearance and other available information. Based on previous expert knowledge, the following information is useful for mushroom classification:
+Further classification according to taste is also possible and in some cases poison can be removed by cooking.  
+
+Humans are generally very good at categorizing items based on appearance and other available information. Based on expert knowledge, the following information is useful for mushroom classification:
 
 1) Where the mushroom grows: is it on the ground or on wood.  
 1.1) If it grows on ground it could be a saprotroph of detritus (karikkeen lahottaja), mycorrhiza (juurisieni) which is specific type of mushroom living from the roots of a tree or it could still be a saprotroph of a tree but the wood is on ground level.  

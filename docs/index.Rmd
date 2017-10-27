@@ -1,12 +1,20 @@
 ---
 title: 'Deep Shrooms: classifying mushroom images'
 author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää'
-output: html_document
+output: 
+  html_document:
+  theme: sandstone
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
+<style>
+.main-container {
+max-width: 900px;
+}
+</style>
 
 # Introduction
 

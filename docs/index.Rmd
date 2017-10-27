@@ -6,10 +6,6 @@ output:
   theme: sandstone
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
 <style>
 .main-container {
 max-width: 900px;
@@ -18,6 +14,11 @@ body {
 background-color: #FCFEFB;
 }
 </style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
 
 # Introduction
 

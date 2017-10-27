@@ -1,6 +1,9 @@
 # deep-shrooms
 Project for the Helsinki University course Introduction to Data Science
 
+[frontend](https://github.com/TeemuKoivisto/deep-shrooms-frontend)
+[backend](https://github.com/TeemuKoivisto/deep-shrooms-backend)
+
 ## Project website
 
 [here](https://tuomonieminen.github.io/deep-shrooms)

@@ -153,11 +153,15 @@ knitr::include_graphics("precision_recall.png")
 
 # Building the app
 
-We created a demo-app using React as frontend and Flask as a backend that loads the imported model and classifies the pictures as they come. The app can be found [here](https://teekoivi.users.cs.helsinki.fi/). The user can select a file to give to the app and the app predicts a propability of the mushrooms edibility. The page also contains some example images with links. By clicking on a example image the app calculates the propability for them.
+As mentioned earlier our goal was to create a mobile app that classifies mushrooms. How hard creating a simple app could be?
 
-Building the app was quite time consuming. React-Native wasn’t as straight-forward as we thought it would have been.Serving the model was also complicated. Tensorflow-serving was probably the “best” way of doing it but super-difficult to use.
+Well as it turns out it's pretty darn hard when the tooling tries to actively fight against you. React-Native while polished and easy to use didn't really work with the `react-native-camere` that used a native camera module. After ardous long hours a prototype was eventually made but it was too hard to get it to a state that it would have been useful.
 
-[The app](https://teekoivi.users.cs.helsinki.fi/)
+So instead we focused on a MVP (Minimal Viabl Product) that was a backend serving the model and some kind of website to show the results. For serving the model there was two choices: either super-complicated Tensorflow-serving or a simple Python server that just loaded the model and used predict for each mushroom image that was sent.
+
+Following some tutorial found on Youtube a prototype server was made with Flask and crude frontend with React. User can either upload their own image for classification or just click some pre-created images already server on the page.
+
+https://teekoivi.users.cs.helsinki.fi/
 
 # Sources
 

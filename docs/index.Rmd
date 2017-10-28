@@ -55,7 +55,7 @@ As already mentioned, we'll have to pay close attention to the possibility of fa
 
 # Retrieving and transforming data
 
-www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. The database is not directly accessible, so we build a web scraper which retrieves information from the website. For each mushroom, we collected the URL:s for the available images of the mushroom, and then downloaded the images. We were able to retrieve 536 pictures of 166 different mushrooms as a base data-set. We also collected the mushroom names in English and Latin and used an external data source to also retrieve the names in Finnish.
+http://www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. The database is not directly accessible, so we build a web scraper which retrieves information from the website. For each mushroom, we collected the URL:s for the available images of the mushroom, and then downloaded the images. We were able to retrieve 536 pictures of 166 different mushrooms as a base data-set. We also collected the mushroom names in English and Latin and used an external data source to also retrieve the names in Finnish.
 
 In mushroom.world, the edibility of mushrooms was classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "lethally poisonous". Due to the small amount of available data, we decided to treat the problem as a binary classification task, and narrowed the edibility status down to edible versus non-edible. We categorized "edible when cooked" as non-edible, which means that in our definition, an "edible" mushroom requires no preprocessing and is always safe to eat. 
 
@@ -91,7 +91,7 @@ knitr::include_graphics("model.png")
 
 ## Convolutional layers
 
-The convolutional layers of the network are essential, as their goal is to learn to recognize and extract the important features in the input images. Techically, the convolutional layers use matrix convolution for this task. A matrix convolution is a linear operation which transforms the input by 
+The convolutional layers of the network are essential, as their goal is to learn to recognize and extract the important features in the input images. Technically, the convolutional layers use matrix convolution for this task. A matrix convolution is a linear operation which transforms the input by 
 "sliding" a 3 x 3 convolution matrix (in our case) over the input array and produces a new *feature map*, i.e. a new representation of the input. 
 For colored images, the convolution matrix first looks at the area in the upper left corner of size (3,3,3) and produces a single output 
 by performing a matrix multiplication over that area.
@@ -157,14 +157,19 @@ knitr::include_graphics("precision_recall.png")
 
 # Building the app
 
-We created a demo-app using React as frontend and Flask as a backend that loads the imported model and classifies the pictures as they come. The app can be found [here](https://teekoivi.users.cs.helsinki.fi/). The user can select a file to give to the app and the app predicts a propability of the mushrooms edibility. The page also contains some example images with links. By clicking on a example image the app calculates the propability for them.
+As mentioned earlier our goal was to create a mobile app that classifies mushrooms. How hard creating a simple app could be?
 
-Building the app was quite time consuming. React-Native wasn’t as straight-forward as we thought it would have been.Serving the model was also complicated. Tensorflow-serving was probably the “best” way of doing it but super-difficult to use.
+Well as it turns out it's pretty darn hard when the tooling tries to actively fight against you. React-Native while polished and easy to use didn't really work with the `react-native-camere` that used a native camera module. After ardous long hours a prototype was eventually made but it was too hard to get it to a state that it would have been useful.
 
-[The app](https://teekoivi.users.cs.helsinki.fi/)
+So instead we focused on a MVP (Minimal Viabl Product) that was a backend serving the model and some kind of website to show the results. For serving the model there was two choices: either super-complicated Tensorflow-serving or a simple Python server that just loaded the model and used predict for each mushroom image that was sent.
+
+Following some tutorial found on Youtube a prototype server was made with Flask and crude frontend with React. User can either upload their own image for classification or just click some pre-created images already server on the page.
+
+https://teekoivi.users.cs.helsinki.fi/
 
 # Sources
 
 - [Intuitive explanation of CNNs](https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/)  
 - [Sienten tunnistaminen](http://www.funga.fi/teema-aiheet/sienten-tunnistaminen/)  
 - [CNN binary classification tutorial using litte data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html)  
+- [How to Deploy Keras Models to Production](https://www.youtube.com/watch?v=f6Bf3gl4hWY)

@@ -4,8 +4,11 @@ author: 'Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää'
 output: 
   html_document:
   theme: sandstone
-  before_body: "<style>.main-container{max-width:900px;}body{background-color:#FCFEFB;}</style>"
 ---
+<style>
+.container-fluid{max-width:800px;}
+body{background-color:#FCFEFB;}
+</style>
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -14,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction
 
-Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to poisonous/edible based on image input from the users camera.  
+Deep Shrooms is a project by three students from the University of Helsinki (HY): Teemu Koivisto, Tuomo Nieminen, Jonas Harjunpää. The project relates to the HY course module 'Introduction to Data Science' (fall 2017). The goal of the project is to develop a smartphone application to classify wild mushrooms to edible/not edible based on image input from the users camera.  
 
 The project uses tools of data wrangling, machine learning and interactive application design. The project naturally splits into three parts: (1) retrieving and transforming data, (2) training a classifier, (3) building an interactive application.
 
@@ -24,8 +27,7 @@ The [code](https://github.com/TuomoNieminen/deep-shrooms) for the project lives 
 
 ## Domain introduction
 
-Muhsrooms can be classified into several categories based on edibility. Reasons for not wanting to eat a mushroom include poor taste and poison. Further classification according to taste is also possible and in some cases poison can be removed by cooking.  
-Correct classification of a found mushroom is a basic problem that a mushroom hunter faces: the hunter wishes to avoid inedible and poisonous mushrooms and to collect edible mushrooms.
+Muhsrooms can be classified into several categories based on edibility. Reasons for not wanting to eat a mushroom include poor taste and poison. Further classification according to taste is also possible and in some cases poison can be removed by cooking. Correct classification of a found mushroom is a basic problem that a mushroom hunter faces: the hunter wishes to avoid inedible and poisonous mushrooms and to collect edible mushrooms.
 
 Humans are generally very good at categorizing items based on appearance and other available information. Based on expert knowledge, the following information is useful for mushroom classification:
 
@@ -42,26 +44,28 @@ Humans are generally very good at categorizing items based on appearance and oth
 
 ## Technical introduction
 
-The specific goal of our project is to create a smartphone application which classifies user inputted pictures of mushrooms to edible or not edible, using a machine learning classifier based on a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
+The specific goal of our project is to create a smartphone application which classifies user inputted pictures of wild mushrooms to edible or not edible, using a machine learning classifier based on a convolutional neural network (CNN). CNN:s are the current state-of-the-art in image recognition. 
 
-To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to include a reliable edibility tag. A name tag could be enough, since edibility could be separately retrived based on the name. We'll also have to normalize the size and shape of any pictures we'll find, since usually classification algorithms expect prespecified input sizes.
+To train such a classifier, we'll need large amounts of pictures of previously classified mushrooms to use as examples. We cannot simply use any pictures of mushrooms, since they have to include a reliable edibility tag. A name tag could be enough, since edibility could be separately retrived based on the name. We'll also have to normalize the size and shape of any pictures we'll use, since usually classification algorithms expect prespecified input sizes.
 
-We do not expect to be able to explicitly extract the influential features introduced in the previous section. We will only use images as input information for our classifier, so features such as smell and location will not be used. However, we do expect our model to be able to impicitly extract some of the influential features related to appearance. This is because a CNN performs feature extraction implicitly based on an input image, using it's convolutional layers. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
+We will only use images as input, so features such as smell and location will not be used by our classifier. We also do not expect to be able to explicitly extract the influential features introduced in the previous section. However, we do expect our model to be able to impicitly extract some influential features related to appearance. This is because a CNN performs feature extraction implicitly based on an input image, using it's convolutional layers. It is "simply" a matter of defining the structure of the network in such a way that the network is able to extract the information it needs for the classification task.
 
 As already mentioned, we'll have to pay close attention to the possibility of false edibles. Instead of simply outputting a binary class, we'll instead provide the user with the *probability* of having an edible mushroom in their hands. If the user finds that the probability of edibility is high, the user can decide to collect the mushroom and do further reseach at home. Our app is therefore a tool for deciding whether to collect a mushroom, not a tool for deciding whether to eat the mushroom.
 
 
 # Retrieving and transforming data
 
-www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. The database is not directly accessible, so we build a web scraped which retrieves muhsroom information from the website. For each mushroom, we also collected the URL:s for the available images of the mushroom and then downloaded the images. We also collected the mushroom names in English and Latin and used another data source to retrieve the names in Finnish. We were able to retrieve 536 pictures of 166 different mushrooms as a base data-set.
+www.mushroom.world contains a large database of mushroom pictures and information such as edibility status. The database is not directly accessible, so we build a web scraper which retrieves information from the website. For each mushroom, we collected the URL:s for the available images of the mushroom, and then downloaded the images. We were able to retrieve 536 pictures of 166 different mushrooms as a base data-set. We also collected the mushroom names in English and Latin and used an external data source to also retrieve the names in Finnish.
 
-In mushroom.world, the edibility of mushrooms was classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "lethally poisonous". Due to the small amount of available data, we decided to treat the problem as a binary classification task and narrowed the edibility status down to edible or non-edible. We categorized "edible when cooked" as non-edible, which means that in our definition, an "edible" mushroom requires no preprocessing and is always safe to eat. 
+In mushroom.world, the edibility of mushrooms was classified into 7 different classes: "edible", "edible and good", "edible and excellent", "not edible", "edible when cooked", "poisonous", "lethally poisonous". Due to the small amount of available data, we decided to treat the problem as a binary classification task, and narrowed the edibility status down to edible versus non-edible. We categorized "edible when cooked" as non-edible, which means that in our definition, an "edible" mushroom requires no preprocessing and is always safe to eat. 
 
-The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this, we standardized the pictures to the size of 480x480, by padding the missing size with the edge values. The images were colored, so more specifically a single image is represented by three stacked 480x480 matrices (one for each of red, green and blue values in the picture) with values between 0 and 255. To avoid numerical problems in training our model, we changed the representation from the original scale of 0-255 to a scale between 0-1.
+The images and the metadata are stored in both Google Drive and Amazon S3. The original pictures were very good quality and therefore took a lot of space. We used .jpg compression and resized the images. In the original set of images, the sizes varied quite a lot. To solve this, we standardized the pictures to the size of 480x480, by padding the missing size with the edge values.  
+
+The images are colored, so more specifically a single image is represented by three stacked 480x480 matrices (one for each of red, green and blue values in the picture) with values between 0 and 255. To avoid numerical problems in training our model, we changed the representation from the original scale of 0-255 to a scale between 0-1.  
 
 # Using augmentation to artificially increase the amount of data
 
-Our mushroom dataset contains some hunderds of pictures. It is however well known that deep learning methods start to work well when them amount of data is quite a lot more, preferably in the tens of thousands if not millions of examples. We were well off the mark.
+Our mushroom dataset contains some hundreds of pictures. It is however well known that deep learning methods start to work well when them amount of data is quite a lot more, preferably in the tens of thousands, if not millions of examples. We were well off the mark.
 
 We decided to "cheat" by artificially increasing the number of unique training examples by introducing small distortions to the images. We used the **keras** deep learning library to build an image generator which, instead of the original images, produces an infinite stream of randomly altered images.
 
